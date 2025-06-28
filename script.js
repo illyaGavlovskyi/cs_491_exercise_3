@@ -98,7 +98,7 @@ function checkGameResult(gameState) {
 }
 
 // ================================
-// GAME STATE + GUI
+// Game state + User Interface
 // ================================
 
 let fileHandle = null;
