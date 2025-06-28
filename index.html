@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tic-Tac-Toe - Exercise 3</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="layout">
+            <h1>Tic Tac Toe</h1>
+            
+            <div class="game-info">
+                <p><strong>Instructions:</strong> Open this page in two different browsers. The first browser to click "Start" will be Player O (goes first).</p>
+                <p>You'll need to select a shared JSON file to store the game state between browsers.</p>
+            </div>
+            
+            <table id="board">
+                <tr>
+                    <td id="box_1" class="cell"></td>
+                    <td id="box_2" class="cell"></td>
+                    <td id="box_3" class="cell"></td>
+                </tr>
+                <tr>
+                    <td id="box_4" class="cell"></td>
+                    <td id="box_5" class="cell"></td>
+                    <td id="box_6" class="cell"></td>
+                </tr>
+                <tr>
+                    <td id="box_7" class="cell"></td>
+                    <td id="box_8" class="cell"></td>
+                    <td id="box_9" class="cell"></td>
+                </tr>
+            </table>
+            
+            <h2 id="statusText">Click Start to begin!</h2>
+            <button id="controller">Start</button>
+            <div id="errorMessage" class="error"></div>
+        </div>
+        <script src='script.js'></script>
+    </body>
+</html>
