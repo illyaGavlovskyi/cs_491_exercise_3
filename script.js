@@ -77,7 +77,6 @@ function makeMove(gameState, position) {
     else{
         newState.currentPlayer = gameState.currentPlayer === "O" ? "X" : "O";
     }
-.
     return newState;
 }
 
