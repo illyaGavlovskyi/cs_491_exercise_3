@@ -86,12 +86,12 @@ function makeMove(gameState, position) {
  * @returns {{gameOver: boolean, winner: string|null, winningPositions: number[]}}
  */
 function checkGameResult(gameState) {
-    for (const [a, b, c] of WIN_CONDITIONS) {
-        if (gameState.board[a] && gameState.board[a] === gameState.board[b] && gameState.board[a] === gameState.board[c]) {
+    for(const [a, b, c] of WIN_CONDITIONS){
+        if(gameState.board[a] && gameState.board[a] === gameState.board[b] && gameState.board[a] === gameState.board[c]){
             return { gameOver: true, winner: gameState.board[a], winningPositions: [a, b, c] };
         }
     }
-    if (gameState.moveCount >= 9) {
+    if(gameState.moveCount >= 9){
         return { gameOver: true, winner: null, winningPositions: [] };
     }
     return { gameOver: false, winner: null, winningPositions: [] };
@@ -101,12 +101,17 @@ function checkGameResult(gameState) {
 // Game state + User Interface
 // ================================
 
+/**
+ * @type {Object} FileHandle
+ * @type {number|null} pollInterval
+ */
+
 let fileHandle = null;
 let gameState = createNewGameState();
 let pollInterval = null;
 
 const cells = [];
-for (let i = 1; i <= 9; i++) {
+for(let i = 1; i <= 9; i++){
     cells.push(document.getElementById(`box_${i}`));
 }
 const statusText = document.getElementById("statusText");
@@ -118,36 +123,43 @@ function updateDisplay() {
         cell.textContent = gameState.board[index];
         cell.style.color = "black";
     });
-    if (!gameState.gameActive && gameState.winner?.winningPositions) {
+    if(!gameState.gameActive && gameState.winner?.winningPositions){
         gameState.winner.winningPositions.forEach(pos => {
             cells[pos].style.color = "red";
         });
     }
-    if (!gameState.gameActive) {
-        statusText.textContent = gameState.winner?.winner ? `Player ${gameState.winner.winner} wins!` : "It's a draw!";
-    } else {
+    if(!gameState.gameActive){
+        if(gameState.winner?.winner){
+            statusText.textContent = `Player ${gameState.winner.winner} wins!`;
+        } 
+        else{
+            statusText.textContent = "It's a draw!";
+        }
+    }
+    else{
         statusText.textContent = `Player ${gameState.currentPlayer}'s turn`;
     }
 }
 
 async function saveGameState() {
-    if (!fileHandle) return;
+    if(!fileHandle) return;
     const writable = await fileHandle.createWritable();
     await writable.write(JSON.stringify(gameState, null, 2));
     await writable.close();
 }
 
 async function loadGameState() {
-    if (!fileHandle) return;
-    try {
+    if(!fileHandle) return;
+    try{
         const file = await fileHandle.getFile();
         const text = await file.text();
         const loadedState = JSON.parse(text);
-        if (isValidGameState(loadedState)) {
+        if(isValidGameState(loadedState)){
             gameState = loadedState;
             updateDisplay();
         }
-    } catch (e) {
+    }
+    catch (e) {
         console.warn("Could not load game state:", e.message);
     }
 }
@@ -177,13 +189,10 @@ function clearError() {
 }
 
 async function handleControllerClick() {
-    if (controller.textContent === "Start") {
-        try {
+    if(controller.textContent === "Start"){
+        try{
             if (!fileHandle) {
-                fileHandle = await window.showSaveFilePicker({
-                    suggestedName: 'tictactoe-game.json',
-                    types: [{ description: 'JSON files', accept: { 'application/json': ['.json'] } }]
-                });
+                fileHandle = await window.showSaveFilePicker();
             }
             gameState = createNewGameState();
             await saveGameState();
@@ -194,7 +203,8 @@ async function handleControllerClick() {
         } catch (err) {
             showError("Failed to start game: " + err.message);
         }
-    } else {
+    } 
+    else{
         stopPolling();
         gameState = createNewGameState();
         await saveGameState();
@@ -204,9 +214,9 @@ async function handleControllerClick() {
 }
 
 async function handleCellClick(index) {
-    if (!gameState.gameActive) return;
+    if(!gameState.gameActive) return;
     const updatedState = makeMove(gameState, index);
-    if (updatedState !== gameState) {
+    if(updatedState !== gameState){
         gameState = updatedState;
         await saveGameState();
         updateDisplay();
@@ -216,6 +226,6 @@ async function handleCellClick(index) {
 controller.addEventListener("click", handleControllerClick);
 cells.forEach((cell, index) => cell.addEventListener("click", () => handleCellClick(index)));
 
-if (!('showSaveFilePicker' in window)) {
+if(!('showSaveFilePicker' in window)){
     errorMessage.textContent = 'This browser does not support the File System Access API.';
 }
